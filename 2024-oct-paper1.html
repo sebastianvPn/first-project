@@ -1,0 +1,2168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ESL 4ES1/01 – Interactive Practice (29 Oct 2024)</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root{
+      --blue:  #2B5CEC;
+      --bg:    #F9F9F9;
+      --black:#000000;
+      --yellow:#FFCC41;
+      --amber: #FEC502;
+      --correct:#2ecc71;
+      --wrong:#e74c3c;
+    }
+    body{
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--black);
+      line-height: 1.6;
+      padding: 0 0 4.5rem;
+    }
+    .page{ max-width: 1020px; margin: 0 auto; padding: 0 1rem; }
+
+    /* ── HEADER ── */
+    header{
+      background: var(--blue);
+      color: #fff;
+      padding: 1.9rem 2.5rem 1.3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    header::after{
+      content:'';
+      position:absolute;
+      bottom:-40px;
+      right:-40px;
+      width:180px;
+      height:180px;
+      background: var(--yellow);
+      border-radius: 50%;
+      opacity: .18;
+    }
+    .badges{
+      display:flex;
+      gap:.55rem;
+      flex-wrap:wrap;
+      margin-bottom:.75rem;
+    }
+    .badge{
+      display:inline-block;
+      background: var(--yellow);
+      color: var(--black);
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: .25rem .75rem;
+      border-radius: 999px;
+    }
+    header h1{ font-size: 1.7rem; font-weight: 900; }
+    header p{ font-size: .92rem; opacity: .9; margin-top: .35rem; }
+
+    /* ── TABS NAV ── */
+    .tabs-wrapper{
+      background: #fff;
+      border-bottom: 2px solid rgba(43,92,236,.12);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(43,92,236,.08);
+    }
+    .tabs-inner{
+      max-width: 1020px;
+      margin: 0 auto;
+      display:flex;
+      overflow-x:auto;
+      scrollbar-width:none;
+      padding: 0 1rem;
+    }
+    .tabs-inner::-webkit-scrollbar{ display:none; }
+    .tab-btn{
+      flex-shrink:0;
+      padding: .95rem 1.35rem;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: .9rem;
+      font-weight: 750;
+      color: rgba(0,0,0,.55);
+      border-bottom: 3px solid transparent;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .tab-btn:hover{ color: var(--blue); }
+    .tab-btn.active{
+      color: var(--blue);
+      border-bottom-color: var(--blue);
+    }
+    .tab-marks{
+      display:inline-block;
+      background: var(--bg);
+      border: 1px solid rgba(0,0,0,.12);
+      font-size: .7rem;
+      font-weight: 900;
+      padding: .12rem .5rem;
+      border-radius: 10px;
+      margin-left: .45rem;
+      color: rgba(0,0,0,.55);
+    }
+    .tab-btn.active .tab-marks{
+      background: var(--yellow);
+      border-color: var(--amber);
+      color: rgba(0,0,0,.85);
+    }
+
+    /* ── TAB PANELS ── */
+    .tab-panel{ display:none; padding: 1.9rem 0 0; }
+    .tab-panel.active{ display:block; }
+
+    /* ── CARD ── */
+    .card{
+      background:#fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(43,92,236,.08);
+      padding: 1.7rem 2.1rem 2rem;
+    }
+
+    /* ── PART HEADER ── */
+    .part-header{
+      background: var(--blue);
+      color: #fff;
+      border-radius: 10px;
+      padding: 1.05rem 1.35rem;
+      margin-bottom: 1.35rem;
+      display:flex;
+      align-items:center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .part-num{
+      background: var(--yellow);
+      color: var(--black);
+      font-weight: 950;
+      font-size: 1rem;
+      border-radius: 8px;
+      padding: .35rem .95rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .part-header h2{ font-size: 1.08rem; font-weight: 900; }
+    .part-header p{ font-size: .88rem; opacity: .95; margin-top: .15rem; }
+
+    /* ── SECTION TITLE ── */
+    .section-title{
+      font-size: .74rem;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--blue);
+      border-left: 4px solid var(--amber);
+      padding-left: .7rem;
+      margin: 1.3rem 0 .9rem;
+    }
+
+    /* ── READING PASSAGE BOX ── */
+    .reading-text{
+      background: var(--bg);
+      border: 1.5px solid rgba(0,0,0,.08);
+      border-radius: 10px;
+      padding: 1.35rem 1.45rem;
+      margin-bottom: 1.2rem;
+    }
+    .reading-text h3{
+      font-size: 1.18rem;
+      font-weight: 950;
+      color: var(--blue);
+      text-align:center;
+      margin-bottom: 1rem;
+    }
+    .para-row{
+      display:grid;
+      grid-template-columns: 2.35rem 1fr;
+      gap: .55rem;
+      margin-bottom: .85rem;
+      align-items:start;
+    }
+    .para-letter{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width: 2rem;
+      height: 2rem;
+      background: var(--blue);
+      color: #fff;
+      font-weight: 900;
+      font-size: .9rem;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+    .para-body{
+      font-size: .93rem;
+      line-height: 1.7;
+      color: #111;
+    }
+    .reading-text p{ margin-bottom: .9rem; }
+
+    .intro-note{
+      font-size: .88rem;
+      color: rgba(0,0,0,.65);
+      margin: 0 0 1rem;
+      padding: .7rem 1rem;
+      background: rgba(43,92,236,.08);
+      border-left: 4px solid var(--blue);
+      border-radius: 8px;
+    }
+
+    /* ── QUESTION BLOCKS ── */
+    .q-block{
+      border: 1.5px solid rgba(43,92,236,.18);
+      border-radius: 12px;
+      background: #fff;
+      padding: 1rem 1.1rem;
+      margin-bottom: 1rem;
+      overflow:hidden;
+    }
+    .q-grid{
+      display:grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 1rem;
+      align-items:start;
+    }
+
+    .q-num{
+      font-weight: 950;
+      color: var(--blue);
+      font-size: 1rem;
+      margin-right: .35rem;
+    }
+    .q-text{ font-size: .93rem; line-height: 1.45; }
+    .q-text strong{ color: var(--blue); }
+
+    /* ── LETTER / MC BUTTONS ── */
+    .btn-row-wrap{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.35rem; }
+    .mc-btn{
+      width: 2.05rem;
+      height: 2.05rem;
+      border: 2px solid var(--blue);
+      border-radius: 7px;
+      font-weight: 900;
+      font-size: .9rem;
+      color: var(--blue);
+      background: #fff;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transition: all .15s;
+      user-select:none;
+    }
+    .mc-btn:hover{ background: rgba(43,92,236,.10); }
+    .mc-btn.selected{ background: var(--blue); color: #fff; }
+    .mc-btn.correct{ background: var(--correct); border-color: var(--correct); color:#fff; }
+    .mc-btn.wrong{ background: var(--wrong); border-color: var(--wrong); color:#fff; }
+    .mc-btn.reveal{ background: var(--amber); border-color: var(--amber); color: var(--black); }
+
+    .abcd-options{ display:flex; flex-direction:column; gap:.5rem; }
+    .abcd-btn{
+      width:100%;
+      display:flex;
+      align-items:flex-start;
+      gap:.7rem;
+      padding: .55rem .8rem;
+      border: 1.8px solid rgba(0,0,0,.12);
+      border-radius: 10px;
+      background:#fff;
+      cursor:pointer;
+      font-size: .93rem;
+      text-align:left;
+      transition: all .15s;
+      user-select:none;
+    }
+    .abcd-btn:hover{
+      border-color: var(--blue);
+      background: rgba(43,92,236,.10);
+    }
+    .abcd-btn.selected{
+      border-color: var(--blue);
+      background: rgba(43,92,236,.14);
+    }
+    .abcd-btn.correct{ border-color: var(--correct); background: rgba(46,204,113,.12); }
+    .abcd-btn.wrong{ border-color: var(--wrong); background: rgba(231,76,60,.10); }
+    .abcd-btn.reveal{ border-color: var(--amber); background: rgba(254,197,2,.18); }
+    .abcd-letter{
+      font-weight: 950;
+      color: var(--blue);
+      min-width: 1.3rem;
+      flex-shrink:0;
+      margin-top: .1rem;
+    }
+
+    /* ── INPUTS ── */
+    .answer-box{
+      width:100%;
+      padding: .55rem .7rem;
+      border: 2px solid rgba(0,0,0,.15);
+      border-radius: 9px;
+      font-size: .93rem;
+      background: #fff;
+      outline:none;
+      transition: border-color .15s, background .15s;
+      margin-top:.45rem;
+    }
+    .inline-input{
+      width: 12.5rem;
+      display:inline-block;
+      margin: 0 .25rem;
+      vertical-align: baseline;
+      padding: .35rem .45rem;
+      font-size: .93rem;
+    }
+    .answer-box:focus{ border-color: var(--amber); background: rgba(254,197,2,.12); }
+    .answer-box.correct{ border-color: var(--correct); background: rgba(46,204,113,.10); }
+    .answer-box.wrong{ border-color: var(--wrong); background: rgba(231,76,60,.10); }
+    .reveal-inline{
+      margin-top: .35rem;
+      display:inline-block;
+      background: rgba(254,197,2,.22);
+      border: 2px solid var(--amber);
+      color: rgba(0,0,0,.9);
+      font-weight: 900;
+      padding: .3rem .6rem;
+      border-radius: 999px;
+      font-size: .82rem;
+    }
+
+    /* ── TRUE/FALSE/NG ── */
+    .tfng-options{ display:flex; flex-wrap:wrap; gap:.5rem; margin-top:.35rem; }
+    .tfng-btn{
+      padding: .52rem .95rem;
+      border: 2px solid var(--blue);
+      border-radius: 10px;
+      font-size: .92rem;
+      font-weight: 900;
+      color: var(--blue);
+      background:#fff;
+      cursor:pointer;
+      transition: all .15s;
+      user-select:none;
+    }
+    .tfng-btn:hover{ background: rgba(43,92,236,.10); }
+    .tfng-btn.selected{ background: var(--blue); color:#fff; }
+    .tfng-btn.correct{ background: var(--correct); border-color: var(--correct); color:#fff; }
+    .tfng-btn.wrong{ background: var(--wrong); border-color: var(--wrong); color:#fff; }
+    .tfng-btn.reveal{ background: var(--amber); border-color: var(--amber); color: var(--black); }
+
+    /* ── WORD BOX SUMMARY ── */
+    .word-box-container{
+      background: rgba(254,197,2,.18);
+      border: 2px solid var(--amber);
+      border-radius: 10px;
+      padding: .9rem 1.05rem;
+      margin: 1rem 0 .9rem;
+      display:flex;
+      flex-wrap:wrap;
+      gap:.55rem;
+      align-items:center;
+    }
+    .word-chip{
+      padding: .32rem .85rem;
+      background:#fff;
+      border: 1.8px solid var(--amber);
+      border-radius: 999px;
+      font-size: .86rem;
+      font-weight: 900;
+      color: rgba(0,0,0,.72);
+      cursor:pointer;
+      transition: all .15s;
+      user-select:none;
+    }
+    .word-chip:hover{
+      background: var(--amber);
+      color: var(--black);
+    }
+    .word-chip.used{
+      opacity:.45;
+      cursor: default;
+      text-decoration: line-through;
+    }
+
+    .fill-sentence{
+      background: var(--bg);
+      border: 1.5px solid rgba(0,0,0,.08);
+      border-radius: 10px;
+      padding: 1rem 1.1rem;
+      font-size: .95rem;
+      line-height: 1.95;
+    }
+    .fill-blank{
+      display:inline-flex;
+      align-items:baseline;
+      min-width: 8.5rem;
+      border-bottom: 3px solid var(--blue);
+      padding: 0 .3rem .05rem;
+      margin: 0 .25rem;
+      font-weight: 950;
+      color: var(--blue);
+      cursor:pointer;
+      user-select:none;
+      vertical-align: baseline;
+      position:relative;
+    }
+    .fill-blank .blank-reveal{
+      display:block;
+      font-weight: 950;
+      color: var(--black);
+      background: var(--amber);
+      border: 2px solid var(--amber);
+      border-radius: 999px;
+      padding: .15rem .45rem;
+      font-size: .75rem;
+      margin-left: .2rem;
+      line-height: 1.2;
+      transform: translateY(-.15rem);
+      display:none;
+      white-space: nowrap;
+    }
+    .fill-blank.active-outline{
+      outline: 2px solid var(--amber);
+      outline-offset: 2px;
+    }
+    .fill-blank.correct{
+      border-bottom-color: var(--correct);
+      color: rgba(0,0,0,.8);
+    }
+    .fill-blank.wrong{
+      border-bottom-color: var(--wrong);
+      color: rgba(0,0,0,.8);
+    }
+    .fill-blank.reveal .blank-reveal{
+      display:inline-block;
+    }
+
+    /* ── WRITING TASKS ── */
+    .writing-task{
+      background: rgba(254,197,2,.18);
+      border: 2px solid var(--amber);
+      border-radius: 12px;
+      padding: 1.1rem 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .writing-task h4{
+      font-size: .95rem;
+      font-weight: 950;
+      color: rgba(0,0,0,.78);
+      margin-bottom: .55rem;
+    }
+    .writing-task ul{
+      padding-left: 1.25rem;
+      font-size: .93rem;
+      line-height: 1.85;
+    }
+    .word-limit{
+      margin-top: .6rem;
+      font-size: .85rem;
+      font-weight: 950;
+      color: rgba(0,0,0,.78);
+      background: var(--yellow);
+      display:inline-block;
+      padding: .18rem .7rem;
+      border-radius: 999px;
+      border: 2px solid rgba(0,0,0,.08);
+    }
+    .writing-area{
+      width: 100%;
+      min-height: 220px;
+      padding: .95rem .95rem;
+      border: 2px solid rgba(0,0,0,.16);
+      border-radius: 10px;
+      font-size: .95rem;
+      background:#fff;
+      resize: vertical;
+      font-family: inherit;
+      line-height: 1.7;
+      margin-top: .75rem;
+      outline:none;
+    }
+    .writing-area:focus{ border-color: var(--blue); }
+    .word-counter{
+      font-size: .82rem;
+      color: rgba(0,0,0,.55);
+      margin-top: .35rem;
+      text-align:right;
+      font-weight: 800;
+    }
+
+    /* ── BUTTONS ── */
+    .btn-row{
+      display:flex;
+      gap:.85rem;
+      flex-wrap:wrap;
+      margin-top: 1.2rem;
+      align-items:center;
+      justify-content:flex-start;
+    }
+    .btn{
+      padding: .62rem 1.25rem;
+      border: none;
+      border-radius: 10px;
+      font-size: .92rem;
+      font-weight: 950;
+      cursor:pointer;
+      transition: transform .1s, opacity .15s, background .15s, color .15s;
+      user-select:none;
+    }
+    .btn:hover{ opacity:.9; transform: translateY(-1px); }
+    .btn-primary{ background: var(--blue); color: #fff; }
+    .btn-secondary{ background: var(--yellow); color: var(--black); }
+    .btn-ghost{
+      background: transparent;
+      border: 2px solid var(--blue);
+      color: var(--blue);
+    }
+
+    /* ── SCORE BANNER ── */
+    .score-banner{
+      display:none;
+      margin-top: .95rem;
+      padding: .9rem 1.05rem;
+      border-radius: 10px;
+      font-weight: 950;
+      font-size: 1rem;
+      border: 2px solid transparent;
+    }
+    .score-banner.show{ display:block; }
+    .score-banner.pass{
+      background: rgba(46,204,113,.15);
+      color: rgba(0,0,0,.85);
+      border-color: rgba(46,204,113,.35);
+    }
+    .score-banner.fail{
+      background: rgba(254,197,2,.22);
+      color: rgba(0,0,0,.85);
+      border-color: rgba(254,197,2,.45);
+    }
+
+    /* ── Marking scheme feedback ── */
+    .ms-feedback{
+      display:none;
+      margin-top: .95rem;
+      padding: .95rem 1.05rem;
+      border-radius: 10px;
+      border: 2px solid rgba(254,197,2,.55);
+      background: rgba(254,197,2,.14);
+      font-weight: 800;
+      color: rgba(0,0,0,.85);
+      line-height: 1.45;
+    }
+    .ms-feedback.show{ display:block; }
+    .ms-feedback .fb-title{
+      color: var(--blue);
+      font-size: .98rem;
+      margin-bottom: .45rem;
+      font-weight: 1000;
+    }
+    .fb-items{
+      display:flex;
+      flex-direction:column;
+      gap: .45rem;
+      margin-bottom: .65rem;
+    }
+    .fb-item{
+      background: rgba(255,255,255,.55);
+      border: 1.5px solid rgba(254,197,2,.45);
+      padding: .55rem .7rem;
+      border-radius: 8px;
+      font-size: .9rem;
+      font-weight: 900;
+    }
+    .fb-item span.small{
+      font-weight: 800;
+      color: rgba(0,0,0,.65);
+      margin-left: .35rem;
+      display:inline;
+    }
+    .fb-checklist{
+      background: rgba(255,255,255,.45);
+      border: 1.5px dashed rgba(254,197,2,.7);
+      border-radius: 10px;
+      padding: .7rem .85rem;
+      font-size: .9rem;
+      font-weight: 900;
+      color: rgba(0,0,0,.8);
+    }
+    .fb-checklist .check-title{
+      color: var(--blue);
+      font-weight: 1000;
+      margin-bottom: .35rem;
+    }
+
+    /* ── ANSWER KEY ── */
+    .answer-key{ display:none; margin-top: 1.15rem; }
+    .answer-key.visible{ display:block; }
+    .key-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap:.6rem;
+      margin-top: .75rem;
+    }
+    .key-item{
+      display:flex;
+      align-items:flex-start;
+      gap:.6rem;
+      background: rgba(43,92,236,.05);
+      border: 1.7px solid rgba(43,92,236,.18);
+      border-radius: 10px;
+      padding: .55rem .8rem;
+      font-size: .9rem;
+      line-height: 1.35;
+    }
+    .key-letter{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-width: 2.0rem;
+      height: 2.0rem;
+      background: var(--amber);
+      border: 2px solid var(--amber);
+      color: var(--black);
+      font-weight: 1000;
+      font-size: .95rem;
+      border-radius: 7px;
+      flex-shrink: 0;
+      padding: 0 .4rem;
+    }
+    .teacher-note{
+      background: rgba(254,197,2,.18);
+      border-left: 5px solid var(--amber);
+      border-radius: 10px;
+      padding: .85rem 1rem;
+      font-size: .9rem;
+      line-height: 1.5;
+      margin-top: .75rem;
+    }
+
+    /* ── PROGRESS BAR (optional) ── */
+    .progress-bar{
+      height: 5px;
+      background: rgba(43,92,236,.12);
+      border-radius: 999px;
+      overflow:hidden;
+      margin-bottom: 1.05rem;
+    }
+    .progress-fill{
+      height: 100%;
+      background: var(--blue);
+      width: 0%;
+      transition: width .25s ease;
+    }
+
+    /* ── FOOTER NAV (per tab) ── */
+    .tab-nav-bottom{
+      display:flex;
+      gap: 1rem;
+      justify-content:center;
+      margin-top: 1.2rem;
+      flex-wrap:wrap;
+    }
+
+    @media (max-width: 720px){
+      .q-grid{ grid-template-columns: 1fr; }
+      header{ padding: 1.35rem 1rem 1.05rem; }
+      .card{ padding: 1.1rem 1rem 1.2rem; }
+      .tab-btn{ padding: .85rem 1rem; font-size: .85rem; }
+      .fill-blank{ min-width: 7rem; }
+      .inline-input{ width: 10.5rem; }
+    }
+
+    @media print{
+      .tabs-wrapper, .btn-row, .tab-nav-bottom, .score-banner { display:none !important; }
+      .tab-panel{ display:block !important; }
+      .answer-key{ display:block !important; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="badges">
+      <span class="badge">Pearson Edexcel International GCSE</span>
+      <span class="badge">4ES1/01</span>
+      <span class="badge">Tuesday 29 October 2024</span>
+      <span class="badge">Total: 100 Marks</span>
+    </div>
+    <h1>English as a Second Language</h1>
+    <p>Interactive Online Activity — complete each part, then check your answers</p>
+  </header>
+
+  <div class="tabs-wrapper">
+    <div class="tabs-inner" role="tablist" aria-label="Exam parts">
+      <button class="tab-btn active" onclick="showTab('p1')" type="button">Part 1<span class="tab-marks">10 marks</span></button>
+      <button class="tab-btn" onclick="showTab('p2')" type="button">Part 2<span class="tab-marks">15 marks</span></button>
+      <button class="tab-btn" onclick="showTab('p3')" type="button">Part 3<span class="tab-marks">20 marks</span></button>
+      <button class="tab-btn" onclick="showTab('p4')" type="button">Part 4<span class="tab-marks">10 marks</span></button>
+      <button class="tab-btn" onclick="showTab('p5')" type="button">Part 5<span class="tab-marks">20 marks</span></button>
+      <button class="tab-btn" onclick="showTab('p6')" type="button">Part 6<span class="tab-marks">25 marks</span></button>
+    </div>
+  </div>
+
+  <div class="page">
+    <!-- ===================== PART 1 ===================== -->
+    <div id="p1" class="tab-panel active" data-total-marks="10">
+      <div class="card">
+        <div class="part-header">
+          <span class="part-num">Part 1</span>
+          <div>
+            <h2>The Croft Shopping Centre</h2>
+            <p>Read ‘The Croft Shopping Centre’ in the Insert Booklet, Part 1, page 3 and answer Questions 1–10. &nbsp;|&nbsp; 10 marks</p>
+          </div>
+        </div>
+
+        <div class="reading-text">
+          <h3>The Croft Shopping Centre</h3>
+          <div class="para-row"><span class="para-letter">A</span><p class="para-body">Our opening times allow you to visit either during the day or after a day at the office. We open at 10 a.m. on weekdays and close at 9 p.m. At the weekend, our opening times are different: 9 a.m. to 8 p.m. on Saturday and 11 a.m. to 5 p.m. on Sunday.</p></div>
+          <div class="para-row"><span class="para-letter">B</span><p class="para-body">Getting directions to us could not be any easier. Go to our website, enter your postcode and tell us how you are travelling. This could be by car, public transport or you could be walking. You will then be given the quickest and easiest route.</p></div>
+          <div class="para-row"><span class="para-letter">C</span><p class="para-body">The Croft has over 12,000 free car parking spaces across seven car parks. Pick a car park that is closest to the shops you are visiting to make your shopping trip more convenient. We have charging points for electric vehicles in some of our car parks.</p></div>
+          <div class="para-row"><span class="para-letter">D</span><p class="para-body">We have a huge selection of shops for you to visit, from well-known fashion outlets to shops selling designer clothes and accessories. You can find everything you need for the home, for school and for your leisure activities. Don’t forget our click and collect service.</p></div>
+          <div class="para-row"><span class="para-letter">E</span><p class="para-body">On every floor of The Croft there are coffee shops, cafes and restaurants to suit all tastes and all budgets. Whether you want to take a quick break from shopping or have a coffee or a special meal with family, there’s a place for you.</p></div>
+          <div class="para-row"><span class="para-letter">F</span><p class="para-body">If the children want to get active then visit the adventure playground. It’s the ideal place for them to learn new skills and have fun. They can get wet in the splash area, enjoy digging in the sand pit and use their imagination on the pirate ship.</p></div>
+          <div class="para-row"><span class="para-letter">G</span><p class="para-body">We have an entertainment centre with activities such as basketball hoops and air hockey. Use one of our Fun Cards to pay for the games you want to play. The higher your score, the more points you win and the better the prizes will be.</p></div>
+          <div class="para-row"><span class="para-letter">H</span><p class="para-body">For new parents, we have a well-equipped parent and baby room. This room includes baby changing facilities and a place for warming bottles. Take a welcome break from the noise and the crowds until you are ready to start shopping again.</p></div>
+          <div class="para-row"><span class="para-letter">I</span><p class="para-body">Come and watch the latest movies on one of our nine screens. You can book your tickets using our app and select where you want to sit. Children can watch films for £1 at the Saturday morning film club, giving adults the chance to shop.</p></div>
+          <div class="para-row"><span class="para-letter">J</span><p class="para-body">The climbing centre is a popular choice for all ages and abilities. Our qualified instructors will teach you all about safety in your first session and then you can start climbing. Lessons are available for individuals and small groups to help develop climbing skills. Come and enjoy the adventure.</p></div>
+        </div>
+
+        <div class="intro-note">
+          Questions 1–10: Identify which paragraphs (A–J) contain information listed in Questions 1-10 by marking a cross for the correct answer. If you change your mind about an answer, put a line through the box and then mark your new answer with a cross. You must choose answers only from the information given. Paragraphs may be used more than once or not at all.
+        </div>
+
+        <div class="section-title">Questions 1–10</div>
+
+        <!-- Q1 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div>
+              <div class="q-text"><span class="q-num">1</span>Which paragraph refers to <strong>food options</strong>?</div>
+              <div class="btn-row-wrap mc-options" data-answer="E">
+                <button class="mc-btn" type="button" data-val="A">A</button>
+                <button class="mc-btn" type="button" data-val="B">B</button>
+                <button class="mc-btn" type="button" data-val="C">C</button>
+                <button class="mc-btn" type="button" data-val="D">D</button>
+                <button class="mc-btn" type="button" data-val="E">E</button>
+                <button class="mc-btn" type="button" data-val="F">F</button>
+                <button class="mc-btn" type="button" data-val="G">G</button>
+                <button class="mc-btn" type="button" data-val="H">H</button>
+                <button class="mc-btn" type="button" data-val="I">I</button>
+                <button class="mc-btn" type="button" data-val="J">J</button>
+              </div>
+            </div>
+            <div>
+              <div class="q-text" style="font-weight: 900; color: var(--blue);">Mark: (1)</div>
+              <div class="q-text">Choose one paragraph letter (A–J).</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div>
+              <div class="q-text"><span class="q-num">2</span>Which paragraph refers to <strong>choosing your seats</strong>?</div>
+              <div class="btn-row-wrap mc-options" data-answer="I">
+                <button class="mc-btn" type="button" data-val="A">A</button>
+                <button class="mc-btn" type="button" data-val="B">B</button>
+                <button class="mc-btn" type="button" data-val="C">C</button>
+                <button class="mc-btn" type="button" data-val="D">D</button>
+                <button class="mc-btn" type="button" data-val="E">E</button>
+                <button class="mc-btn" type="button" data-val="F">F</button>
+                <button class="mc-btn" type="button" data-val="G">G</button>
+                <button class="mc-btn" type="button" data-val="H">H</button>
+                <button class="mc-btn" type="button" data-val="I">I</button>
+                <button class="mc-btn" type="button" data-val="J">J</button>
+              </div>
+            </div>
+            <div>
+              <div class="q-text" style="font-weight: 900; color: var(--blue);">Mark: (1)</div>
+              <div class="q-text">Choose one paragraph letter (A–J).</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div>
+              <div class="q-text"><span class="q-num">3</span>Which paragraph refers to <strong>going to the centre after work</strong>?</div>
+              <div class="btn-row-wrap mc-options" data-answer="A">
+                <button class="mc-btn" type="button" data-val="A">A</button>
+                <button class="mc-btn" type="button" data-val="B">B</button>
+                <button class="mc-btn" type="button" data-val="C">C</button>
+                <button class="mc-btn" type="button" data-val="D">D</button>
+                <button class="mc-btn" type="button" data-val="E">E</button>
+                <button class="mc-btn" type="button" data-val="F">F</button>
+                <button class="mc-btn" type="button" data-val="G">G</button>
+                <button class="mc-btn" type="button" data-val="H">H</button>
+                <button class="mc-btn" type="button" data-val="I">I</button>
+                <button class="mc-btn" type="button" data-val="J">J</button>
+              </div>
+            </div>
+            <div>
+              <div class="q-text" style="font-weight: 900; color: var(--blue);">Mark: (1)</div>
+              <div class="q-text">Choose one paragraph letter (A–J).</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div>
+              <div class="q-text"><span class="q-num">4</span>Which paragraph refers to <strong>a group lesson</strong>?</div>
+              <div class="btn-row-wrap mc-options" data-answer="J">
+                <button class="mc-btn" type="button" data-val="A">A</button>
+                <button class="mc-btn" type="button" data-val="B">B</button>
+                <button class="mc-btn" type="button" data-val="C">C</button>
+                <button class="mc-btn" type="button" data-val="D">D</button>
+                <button class="mc-btn" type="button" data-val="E">E</button>
+                <button class="mc-btn" type="button" data-val="F">F</button>
+                <button class="mc-btn" type="button" data-val="G">G</button>
+                <button class="mc-btn" type="button" data-val="H">H</button>
+                <button class="mc-btn" type="button" data-val="I">I</button>
+                <button class="mc-btn" type="button" data-val="J">J</button>
+              </div>
+            </div>
+            <div>
+              <div class="q-text" style="font-weight: 900; color: var(--blue);">Mark: (1)</div>
+              <div class="q-text">Choose one paragraph letter (A–J).</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q5 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div>
+              <div class="q-text"><span class="q-num">5</span>Which paragraph refers to <strong>where to leave your car</strong>?</div>
+              <div class="btn-row-wrap mc-options" data-answer="C">
+                <button class="mc-btn" type="button" data-val="A">A</button>
+                <button class="mc-btn" type="button" data-val="B">B</button>
+                <button class="mc-btn" type="button" data-val="C">C</button>
+                <button class="mc-btn" type="button" data-val="D">D</button>
+                <button class="mc-btn" type="button" data-val="E">E</button>
+                <button class="mc-btn" type="button" data-val="F">F</button>
+                <button class="mc-btn" type="button" data-val="G">G</button>
+                <button class="mc-btn" type="button" data-val="H">H</button>
+                <button class="mc-btn" type="button" data-val="I">I</button>
+                <button class="mc-btn" type="button" data-val="J">J</button>
+              </div>
+            </div>
+            <div>
+              <div class="q-text" style="font-weight: 900; color: var(--blue);">Mark: (1)</div>
+              <div class="q-text">Choose one paragraph letter (A–J).</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q6 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div>
+              <div class="q-text"><span class="q-num">6</span>Which paragraph refers to <strong>a quiet space</strong>?</div>
+              <div class="btn-row-wrap mc-options" data-answer="H">
+                <button class="mc-btn" type="button" data-val="A">A</button>
+                <button class="mc-btn" type="button" data-val="B">B</button>
+                <button class="mc-btn" type="button" data-val="C">C</button>
+                <button class="mc-btn" type="button" data-val="D">D</button>
+                <button class="mc-btn" type="button" data-val="E">E</button>
+                <button class="mc-btn" type="button" data-val="F">F</button>
+                <button class="mc-btn" type="button" data-val="G">G</button>
+                <button class="mc-btn" type="button" data-val="H">H</button>
+                <button class="mc-btn" type="button" data-val="I">I</button>
+                <button class="mc-btn" type="button" data-val="J">J</button>
+              </div>
+            </div>
+            <div>
+              <div class="q-text" style="font-weight: 900; color: var(--blue);">Mark: (1)</div>
+              <div class="q-text">Choose one paragraph letter (A–J).</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q7 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div>
+              <div class="q-text"><span class="q-num">7</span>Which paragraph refers to <strong>finding out where the centre is</strong>?</div>
+              <div class="btn-row-wrap mc-options" data-answer="B">
+                <button class="mc-btn" type="button" data-val="A">A</button>
+                <button class="mc-btn" type="button" data-val="B">B</button>
+                <button class="mc-btn" type="button" data-val="C">C</button>
+                <button class="mc-btn" type="button" data-val="D">D</button>
+                <button class="mc-btn" type="button" data-val="E">E</button>
+                <button class="mc-btn" type="button" data-val="F">F</button>
+                <button class="mc-btn" type="button" data-val="G">G</button>
+                <button class="mc-btn" type="button" data-val="H">H</button>
+                <button class="mc-btn" type="button" data-val="I">I</button>
+                <button class="mc-btn" type="button" data-val="J">J</button>
+              </div>
+            </div>
+            <div>
+              <div class="q-text" style="font-weight: 900; color: var(--blue);">Mark: (1)</div>
+              <div class="q-text">Choose one paragraph letter (A–J).</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q8 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div>
+              <div class="q-text"><span class="q-num">8</span>Which paragraph refers to <strong>winning something</strong>?</div>
+              <div class="btn-row-wrap mc-options" data-answer="G">
+                <button class="mc-btn" type="button" data-val="A">A</button>
+                <button class="mc-btn" type="button" data-val="B">B</button>
+                <button class="mc-btn" type="button" data-val="C">C</button>
+                <button class="mc-btn" type="button" data-val="D">D</button>
+                <button class="mc-btn" type="button" data-val="E">E</button>
+                <button class="mc-btn" type="button" data-val="F">F</button>
+                <button class="mc-btn" type="button" data-val="G">G</button>
+                <button class="mc-btn" type="button" data-val="H">H</button>
+                <button class="mc-btn" type="button" data-val="I">I</button>
+                <button class="mc-btn" type="button" data-val="J">J</button>
+              </div>
+            </div>
+            <div>
+              <div class="q-text" style="font-weight: 900; color: var(--blue);">Mark: (1)</div>
+              <div class="q-text">Choose one paragraph letter (A–J).</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q9 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div>
+              <div class="q-text"><span class="q-num">9</span>Which paragraph refers to <strong>a range of clothing stores</strong>?</div>
+              <div class="btn-row-wrap mc-options" data-answer="D">
+                <button class="mc-btn" type="button" data-val="A">A</button>
+                <button class="mc-btn" type="button" data-val="B">B</button>
+                <button class="mc-btn" type="button" data-val="C">C</button>
+                <button class="mc-btn" type="button" data-val="D">D</button>
+                <button class="mc-btn" type="button" data-val="E">E</button>
+                <button class="mc-btn" type="button" data-val="F">F</button>
+                <button class="mc-btn" type="button" data-val="G">G</button>
+                <button class="mc-btn" type="button" data-val="H">H</button>
+                <button class="mc-btn" type="button" data-val="I">I</button>
+                <button class="mc-btn" type="button" data-val="J">J</button>
+              </div>
+            </div>
+            <div>
+              <div class="q-text" style="font-weight: 900; color: var(--blue);">Mark: (1)</div>
+              <div class="q-text">Choose one paragraph letter (A–J).</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q10 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div>
+              <div class="q-text"><span class="q-num">10</span>Which paragraph refers to <strong>enjoying a water activity</strong>?</div>
+              <div class="btn-row-wrap mc-options" data-answer="F">
+                <button class="mc-btn" type="button" data-val="A">A</button>
+                <button class="mc-btn" type="button" data-val="B">B</button>
+                <button class="mc-btn" type="button" data-val="C">C</button>
+                <button class="mc-btn" type="button" data-val="D">D</button>
+                <button class="mc-btn" type="button" data-val="E">E</button>
+                <button class="mc-btn" type="button" data-val="F">F</button>
+                <button class="mc-btn" type="button" data-val="G">G</button>
+                <button class="mc-btn" type="button" data-val="H">H</button>
+                <button class="mc-btn" type="button" data-val="I">I</button>
+                <button class="mc-btn" type="button" data-val="J">J</button>
+              </div>
+            </div>
+            <div>
+              <div class="q-text" style="font-weight: 900; color: var(--blue);">Mark: (1)</div>
+              <div class="q-text">Choose one paragraph letter (A–J).</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" type="button" onclick="checkTab('p1','s1')">✓ Check Answers</button>
+          <button class="btn btn-secondary" type="button" onclick="toggleKey('k1')">Show / Hide Answer Key</button>
+          <button class="btn btn-ghost" type="button" onclick="resetTab('p1','s1','k1')">Reset</button>
+        </div>
+
+        <div class="score-banner" id="s1"></div>
+        <div class="ms-feedback" id="fb1"></div>
+
+        <div class="answer-key" id="k1">
+          <div class="section-title">Answer Key – Part 1</div>
+          <div class="teacher-note">
+            Paragraph letters are marked against the information in the Insert Booklet.
+          </div>
+          <div class="key-grid">
+            <div class="key-item"><span class="key-letter">E</span><span>Q1 – food options</span></div>
+            <div class="key-item"><span class="key-letter">I</span><span>Q2 – choosing your seats</span></div>
+            <div class="key-item"><span class="key-letter">A</span><span>Q3 – going to the centre after work</span></div>
+            <div class="key-item"><span class="key-letter">J</span><span>Q4 – a group lesson</span></div>
+            <div class="key-item"><span class="key-letter">C</span><span>Q5 – where to leave your car</span></div>
+            <div class="key-item"><span class="key-letter">H</span><span>Q6 – a quiet space</span></div>
+            <div class="key-item"><span class="key-letter">B</span><span>Q7 – finding out where the centre is</span></div>
+            <div class="key-item"><span class="key-letter">G</span><span>Q8 – winning something</span></div>
+            <div class="key-item"><span class="key-letter">D</span><span>Q9 – a range of clothing stores</span></div>
+            <div class="key-item"><span class="key-letter">F</span><span>Q10 – enjoying a water activity</span></div>
+          </div>
+        </div>
+
+        <div class="tab-nav-bottom">
+          <button class="btn btn-primary" type="button" onclick="showTab('p2')">Next: Part 2 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== PART 2 ===================== -->
+    <div id="p2" class="tab-panel" data-total-marks="15">
+      <div class="card">
+        <div class="part-header">
+          <span class="part-num">Part 2</span>
+          <div>
+            <h2>The Beauty of West Sweden</h2>
+            <p>Read the article ‘The Beauty of West Sweden’ by Sian Lewis in the Insert Booklet, Part 2, pages 4–5 and answer Questions 11–25. &nbsp;|&nbsp; 15 marks</p>
+          </div>
+        </div>
+
+        <div class="reading-text">
+          <h3>The Beauty of West Sweden</h3>
+          <p class="para-body">I am on day one of my trip to the city of Gothenburg in West Sweden and I am enjoying a guided tour of the nearby islands. We left the calm waters of Gothenburg harbour and are now out at sea. The wind sprays water in our faces as my guide and I paddle in our canoes over rolling waves. We land on some rocks and find a comfortable place to sit for our coffee and cake break. We are on a deserted island with a fantastic view of the ocean.</p>
+          <p class="para-body">This region, which takes in the lovely city of Gothenburg and the surrounding coast and countryside, wants to make eco-friendly travel as simple as possible. In order to do this, a new initiative called ‘Stepping up Sustainability’ was introduced in November 2021. This scheme provides details of around 450 local businesses and accommodation providers working together to reduce their impact on the environment. For example, this means that travellers can make informed decisions about where they eat and stay, and feel great about the choices they have made.</p>
+          <p class="para-body">Even after a short time in Gothenburg, I can see how green the lifestyle is and I am inspired. Locals zoom about on bicycles, jump on electric trams, or rent electric boats to get around the city’s harbour. The city centre is designed to be pedestrian-friendly too. As I wander around, I spot very few cars along the way. Most of the city’s hotels are also eco-certified, showing that they operate in a way that considers the environment.</p>
+          <p class="para-body">Gothenburg is also a popular spot for second-hand and vintage clothes shopping.</p>
+          <p class="para-body">In terms of getting from one place to another, Sweden’s public transport system is truly remarkable. Bus, train and ferry timetables to the islands are all designed to match perfectly. There are not the same delays I’ve come to expect when travelling in Britain, and ticket prices in Sweden are much more reasonable. Also, if you prefer having your own car, you can rent an eco-friendly one. For the second half of my trip, I do just that, finding plenty of charging points as I go.</p>
+          <p class="para-body">The island of Hono is a quick ferry ride from Gothenburg and I am exploring the island with someone who lives there. The successful ‘Meet the Locals’ scheme links visitors with welcoming volunteers from all over the region for the day. I am put in touch with someone who shares my obsession with wild swimming. Making friends is always difficult in a new country, but the Swedes have solved that problem too. We hike along the island’s coast path in the sunshine and swim off the rocks in clear waters. It’s the kind of relaxed, sociable day you rarely get to experience in a new place, and I’m grateful for this opportunity.</p>
+          <p class="para-body">With 8000 islands to choose from in West Sweden’s archipelago, it’s hard to pick a favourite, but I love the relaxed pace of Dyron. It is 43 miles away, and a quick ferry ride from Gothenburg. Locals transport their goods from the ferry to their homes in carts, on bicycles or on electric scooters. There have never been cars on this small, delightful island.</p>
+          <p class="para-body">The 600 permanent residents work to keep the island open to visitors through every season, not just the summer. For me, the ‘Stepping up Sustainability’ scheme is about more than clean energy and environmentally-friendly holidays. Encouraging visitors throughout the seasons provides jobs for locals. Other islands are closed and quiet in the winter months. On this island, the inhabitants happily join together to make sure transport, food, events and hiking trails keep going, so that the island appeals to visitors all year round. It certainly is a place worth visiting.</p>
+          <p class="para-body">At the far southern point I find Dyron’s community sauna, which visitors can book for private use. On my last evening here, I have it all to myself. There is a huge picture window that looks out to the West Sea. A platform with a ladder leads down to the water outside. You can take a post-sauna swim if you are brave enough. For me, it’s the perfect place to appreciate the sunset and the forward-thinking West Sweden communities who look after these beautiful spaces.</p>
+          <p class="para-body">(Source: https://www.independent.co.uk/travel/sustainable-travel/west-sweden-sustainable-travel-eco-friendly-b2131473.html)</p>
+        </div>
+
+        <div class="section-title">Questions 11–20 — Short Answer</div>
+        <div class="intro-note">Answer the following questions. For each question write no more than THREE words that must be taken from one point in the text. DO NOT write full sentences.</div>
+
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">11</span>What are Sian Lewis and her guide travelling in to tour the islands? <span style="font-weight:900;color:var(--blue)">(1)</span></div>
+            <div>
+              <input class="answer-box" type="text" data-marks="1" data-answer="canoes" placeholder="Your answer…"/>
+              <div class="reveal-inline" style="display:none;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">12</span>What scheme was started to help visitors choose accommodation? <span style="font-weight:900;color:var(--blue)">(1)</span></div>
+            <div>
+              <input class="answer-box" type="text" data-marks="1" data-answer="Stepping up Sustainability" placeholder="Your answer…"/>
+              <div class="reveal-inline" style="display:none;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">13</span>How does the way of life in Gothenburg make Sian feel? <span style="font-weight:900;color:var(--blue)">(1)</span></div>
+            <div>
+              <input class="answer-box" type="text" data-marks="1" data-answer="inspired" placeholder="Your answer…"/>
+              <div class="reveal-inline" style="display:none;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">14</span>According to Sian, what is more expensive when using public transport in Britain? <span style="font-weight:900;color:var(--blue)">(1)</span></div>
+            <div>
+              <input class="answer-box" type="text" data-marks="1" data-answer="ticket prices" placeholder="Your answer…"/>
+              <div class="reveal-inline" style="display:none;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">15</span>On the island of Hono, how long do visitors spend with volunteers? <span style="font-weight:900;color:var(--blue)">(1)</span></div>
+            <div>
+              <input class="answer-box" type="text" data-marks="1" data-answer="day|the day" placeholder="Your answer…"/>
+              <div class="reveal-inline" style="display:none;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">16</span>How does Sian feel about her time on the island of Hono? <span style="font-weight:900;color:var(--blue)">(1)</span></div>
+            <div>
+              <input class="answer-box" type="text" data-marks="1" data-answer="grateful" placeholder="Your answer…"/>
+              <div class="reveal-inline" style="display:none;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">17</span>What are not used on the island of Dyron? <span style="font-weight:900;color:var(--blue)">(1)</span></div>
+            <div>
+              <input class="answer-box" type="text" data-marks="1" data-answer="cars" placeholder="Your answer…"/>
+              <div class="reveal-inline" style="display:none;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">18</span>According to Sian, why does Dyron need visitors all year round? <span style="font-weight:900;color:var(--blue)">(1)</span></div>
+            <div>
+              <input class="answer-box" type="text" data-marks="1" data-answer="provides jobs|jobs for locals" placeholder="Your answer…"/>
+              <div class="reveal-inline" style="display:none;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">19</span>In which place does Sian spend her final evening on Dyron? <span style="font-weight:900;color:var(--blue)">(1)</span></div>
+            <div>
+              <input class="answer-box" type="text" data-marks="1" data-answer="sauna|community sauna" placeholder="Your answer…"/>
+              <div class="reveal-inline" style="display:none;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">20</span>How does Sian describe the people of West Sweden? <span style="font-weight:900;color:var(--blue)">(1)</span></div>
+            <div>
+              <input class="answer-box" type="text" data-marks="1" data-answer="forward-thinking" placeholder="Your answer…"/>
+              <div class="reveal-inline" style="display:none;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">Questions 21–25</div>
+        <div class="intro-note">Identify which of the options (A–D) is correct for Questions 21–25 by marking a cross in the box. If you change your mind about an answer, put a line through the box and then mark your new answer with a cross.</div>
+
+        <!-- Q21 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">21</span> The ‘Stepping up Sustainability’ scheme <span style="font-weight:900;color:var(--blue)">(1)</span></div>
+            <div>
+              <div class="abcd-options" data-answer="D">
+                <button class="abcd-btn" type="button" data-val="A"><span class="abcd-letter">A</span>takes hotel room bookings.</button>
+                <button class="abcd-btn" type="button" data-val="B"><span class="abcd-letter">B</span>helps start new businesses.</button>
+                <button class="abcd-btn" type="button" data-val="C"><span class="abcd-letter">C</span>gives people business loans.</button>
+                <button class="abcd-btn" type="button" data-val="D"><span class="abcd-letter">D</span>promotes local businesses.</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q22 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">22</span> Which of the following is true about Gothenburg? <span style="font-weight:900;color:var(--blue)">(1)</span></div>
+            <div>
+              <div class="abcd-options" data-answer="C">
+                <button class="abcd-btn" type="button" data-val="A"><span class="abcd-letter">A</span>It does not allow people to use cars.</button>
+                <button class="abcd-btn" type="button" data-val="B"><span class="abcd-letter">B</span>It is easy to rent bicycles for the day.</button>
+                <button class="abcd-btn" type="button" data-val="C"><span class="abcd-letter">C</span>It is designed to encourage walking.</button>
+                <button class="abcd-btn" type="button" data-val="D"><span class="abcd-letter">D</span>It is known for its big brand stores.</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q23 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">23</span> Sweden’s public transport system is <span style="font-weight:900;color:var(--blue)">(1)</span></div>
+            <div>
+              <div class="abcd-options" data-answer="A">
+                <button class="abcd-btn" type="button" data-val="A"><span class="abcd-letter">A</span>an efficient choice for travellers.</button>
+                <button class="abcd-btn" type="button" data-val="B"><span class="abcd-letter">B</span>known for regularly being delayed.</button>
+                <button class="abcd-btn" type="button" data-val="C"><span class="abcd-letter">C</span>in need of more transport options.</button>
+                <button class="abcd-btn" type="button" data-val="D"><span class="abcd-letter">D</span>a better alternative to using a car.</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q24 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">24</span> Which of the following is true about Sian’s time on the island of Hono? <span style="font-weight:900;color:var(--blue)">(1)</span></div>
+            <div>
+              <div class="abcd-options" data-answer="B">
+                <button class="abcd-btn" type="button" data-val="A"><span class="abcd-letter">A</span>She spent the day with a group of people.</button>
+                <button class="abcd-btn" type="button" data-val="B"><span class="abcd-letter">B</span>She was able to enjoy a favourite activity.</button>
+                <button class="abcd-btn" type="button" data-val="C"><span class="abcd-letter">C</span>She went to visit a friend who lives there.</button>
+                <button class="abcd-btn" type="button" data-val="D"><span class="abcd-letter">D</span>She would have liked to stay there longer.</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q25 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">25</span> Which of the following is true about the island of Dyron? <span style="font-weight:900;color:var(--blue)">(1)</span></div>
+            <div>
+              <div class="abcd-options" data-answer="C">
+                <button class="abcd-btn" type="button" data-val="A"><span class="abcd-letter">A</span>It is a long journey from Gothenburg.</button>
+                <button class="abcd-btn" type="button" data-val="B"><span class="abcd-letter">B</span>The residents only live there in summer.</button>
+                <button class="abcd-btn" type="button" data-val="C"><span class="abcd-letter">C</span>It is busier than other islands in winter.</button>
+                <button class="abcd-btn" type="button" data-val="D"><span class="abcd-letter">D</span>The residents dislike working together.</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" type="button" onclick="checkTab('p2','s2')">✓ Check Answers</button>
+          <button class="btn btn-secondary" type="button" onclick="toggleKey('k2')">Show / Hide Answer Key</button>
+          <button class="btn btn-ghost" type="button" onclick="resetTab('p2','s2','k2')">Reset</button>
+        </div>
+
+        <div class="score-banner" id="s2"></div>
+        <div class="ms-feedback" id="fb2"></div>
+
+        <div class="answer-key" id="k2">
+          <div class="section-title">Answer Key – Part 2</div>
+          <div class="key-grid">
+            <div class="key-item"><span class="key-letter">–</span><span>Q11 – canoes</span></div>
+            <div class="key-item"><span class="key-letter">–</span><span>Q12 – Stepping up Sustainability</span></div>
+            <div class="key-item"><span class="key-letter">–</span><span>Q13 – inspired</span></div>
+            <div class="key-item"><span class="key-letter">–</span><span>Q14 – ticket prices</span></div>
+            <div class="key-item"><span class="key-letter">–</span><span>Q15 – (the) day</span></div>
+            <div class="key-item"><span class="key-letter">–</span><span>Q16 – grateful</span></div>
+            <div class="key-item"><span class="key-letter">–</span><span>Q17 – cars</span></div>
+            <div class="key-item"><span class="key-letter">–</span><span>Q18 – provides jobs / jobs for locals</span></div>
+            <div class="key-item"><span class="key-letter">–</span><span>Q19 – (community) sauna</span></div>
+            <div class="key-item"><span class="key-letter">–</span><span>Q20 – forward-thinking</span></div>
+            <div class="key-item"><span class="key-letter">D</span><span>Q21 – promotes local businesses</span></div>
+            <div class="key-item"><span class="key-letter">C</span><span>Q22 – designed to encourage walking</span></div>
+            <div class="key-item"><span class="key-letter">A</span><span>Q23 – an efficient choice for travellers</span></div>
+            <div class="key-item"><span class="key-letter">B</span><span>Q24 – She was able to enjoy a favourite activity.</span></div>
+            <div class="key-item"><span class="key-letter">C</span><span>Q25 – busier than other islands in winter</span></div>
+          </div>
+        </div>
+
+        <div class="tab-nav-bottom">
+          <button class="btn btn-ghost" type="button" onclick="showTab('p1')">← Part 1</button>
+          <button class="btn btn-primary" type="button" onclick="showTab('p3')">Next: Part 3 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== PART 3 ===================== -->
+    <div id="p3" class="tab-panel" data-total-marks="20">
+      <div class="card">
+        <div class="part-header">
+          <span class="part-num">Part 3</span>
+          <div>
+            <h2>Getting Back to Nature</h2>
+            <p>Read the article ‘Getting Back to Nature’ by Harriet Sherwood in the Insert Booklet, Part 3, pages 6–7 and answer Questions 26–45. &nbsp;|&nbsp; 20 marks</p>
+          </div>
+        </div>
+
+        <div class="reading-text">
+          <h3>Getting Back to Nature</h3>
+          <p class="para-body">Every day, apart from when it’s raining heavily, Dr Qing Li heads to a leafy park near the Nippon Medical School in Tokyo where he works. The park is not just a pleasant place to eat his lunch. He believes the time spent under the trees’ canopy is a critical factor in having a healthy mind and body. Once a month, Li spends three days in forests near Tokyo, using all five senses to connect with the environment and clear his mind. This practice of forest bathing has the power to prevent both physical and mental illnesses.</p>
+          <p class="para-body">The Woodland Trust, Britain’s largest woodland conservation organisation, has suggested that forest bathing should be among a range of non-medical therapies recommended by doctors to boost patients’ wellbeing. Other non-medical therapies include volunteering, gardening, sport and cookery. Known as social prescribing, this is a growing movement in Britain.</p>
+          <p class="para-body">Forest bathing is an opportunity for people to take time out, slow down and connect with nature. Forest bathing was developed in the 1980s in Japan. Although people had been taking walks in the country’s forests for centuries, new studies showed that such an activity could have health benefits. A chemical released by trees and plants was found to boost the immune system. As more research highlighted the benefits of forest bathing, the Japanese government incorporated it into the country’s health programme. We have them to thank for this idea.</p>
+          <p class="para-body">It’s considered to be a preventative medicine, not a treatment. About 80 per cent of Japan’s population live in urban areas, with little access to green areas, and those in America typically lead indoor lives. However, our bodies are designed to be connected to the natural world, to listen to the wind and taste the air.</p>
+          <p class="para-body">In order to practise forest bathing effectively, you should make sure you have left your phone and camera behind. You have to walk aimlessly and slowly and you don’t need any devices. Allow your body to be your guide and listen to where it wants to take you. It doesn’t matter if you don’t get anywhere. You are not going anywhere. You are enjoying the sounds, smells and sights of nature, and letting the forest in.</p>
+          <p class="para-body">Gary Evans, who set up the Forest Bathing Institute in Britain last year, believes that people initially think they’ve been forest bathing all their lives by heading for the woods and going for a walk. However, they might be going too fast, or they might be worrying about what the children are doing, and not focusing on their environment. A better way to think about forest bathing is to view it as mindful time spent under the canopy of trees for health and wellbeing purposes.</p>
+          <p class="para-body">A typical session at the Institute might last three hours. It begins with an explanation of the history and science of forest bathing before heading for the woods to take part in sensory exercises. Guides try to hold people’s attention on the present moment, to give their bodies and minds a chance to slow down. The group moves very slowly, touching the trees, appreciating nature and breathing deeply. They finish by lying down under the trees and looking up through the branches to appreciate how relaxing the colours of the forest are.</p>
+          <p class="para-body">After a slow start, Gary Evans believes that forest bathing is becoming more popular. There is a growing recognition of the value of forest bathing. Doctors in Britain have expressed interest in prescribing forest bathing as a non-medical therapy. The Forest Bathing Institute is training people to become forest bathing guides. However, we’re 40 years behind Japan’s forest bathing initiative.</p>
+          <p class="para-body">One study conducted in Britain found that exposure to trees, the sky and birdsong in cities improved mental wellbeing. The benefits were still evident several hours after the exposure. Even the occasional 20 minutes can help, which surprised me, though a regular 10 hours a month is even better. If you live in a city, you may not be able to get to a forest easily, but taking off your shoes in the park and feeling the grass will help you de-stress.</p>
+          <p class="para-body">A study of 585 Japanese people published last year said that city dwellers were constantly exposed to stressors, and that urban living is linked to increased risk of health problems. The study concluded that the psychological benefits of walking through forests are very significant. Therefore, city planners should pay more attention to maintaining and increasing the number of green spaces in urban areas. The beneficial effects of nature suggest a simple and accessible method to improve the quality of life and health of urban residents. I think spending time in green areas is an activity we can all practise as a way of regaining balance, and escaping the pressures of everyday life.</p>
+          <p class="para-body">(Source: https://www.theguardian.com/environment/2019/jun/08/forest-bathing-japanese-practice-in-west-wellbeing)</p>
+        </div>
+
+        <div class="section-title">Questions 26–30</div>
+        <div class="intro-note">Read the statements below. Decide whether they are TRUE, FALSE or NOT GIVEN according to the text. Mark a cross for the correct answer. If you change your mind about an answer, put a line through the box and then mark your new answer with a cross.</div>
+
+        <!-- Q26 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">26</span> The Woodland Trust supports the use of forest bathing to help with people’s health. <span style="font-weight:900;color:var(--blue)">(1)</span></div>
+            <div>
+              <div class="tfng-options" data-answer="TRUE">
+                <button class="tfng-btn" type="button" data-val="TRUE">True</button>
+                <button class="tfng-btn" type="button" data-val="FALSE">False</button>
+                <button class="tfng-btn" type="button" data-val="NOT GIVEN">Not Given</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Q27 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">27</span> Harriet Sherwood is unhappy with decisions made by the Japanese government. <span style="font-weight:900;color:var(--blue)">(1)</span></div>
+            <div>
+              <div class="tfng-options" data-answer="FALSE">
+                <button class="tfng-btn" type="button" data-val="TRUE">True</button>
+                <button class="tfng-btn" type="button" data-val="FALSE">False</button>
+                <button class="tfng-btn" type="button" data-val="NOT GIVEN">Not Given</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Q28 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">28</span> Forest bathing requires people to walk a certain distance. <span style="font-weight:900;color:var(--blue)">(1)</span></div>
+            <div>
+              <div class="tfng-options" data-answer="FALSE">
+                <button class="tfng-btn" type="button" data-val="TRUE">True</button>
+                <button class="tfng-btn" type="button" data-val="FALSE">False</button>
+                <button class="tfng-btn" type="button" data-val="NOT GIVEN">Not Given</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Q29 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">29</span> The forest bathing sessions at the Institute are expensive. <span style="font-weight:900;color:var(--blue)">(1)</span></div>
+            <div>
+              <div class="tfng-options" data-answer="NOT GIVEN">
+                <button class="tfng-btn" type="button" data-val="TRUE">True</button>
+                <button class="tfng-btn" type="button" data-val="FALSE">False</button>
+                <button class="tfng-btn" type="button" data-val="NOT GIVEN">Not Given</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Q30 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">30</span> Harriet thought that a short time spent in nature would not have a positive impact. <span style="font-weight:900;color:var(--blue)">(1)</span></div>
+            <div>
+              <div class="tfng-options" data-answer="TRUE">
+                <button class="tfng-btn" type="button" data-val="TRUE">True</button>
+                <button class="tfng-btn" type="button" data-val="FALSE">False</button>
+                <button class="tfng-btn" type="button" data-val="NOT GIVEN">Not Given</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">Questions 31–40</div>
+        <div class="intro-note">Complete the following sentences using no more than THREE words that must be taken from one point in the text.</div>
+
+        <!-- Q31 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">31</span> Dr Qing Li visits the nearby park to <input class="answer-box inline-input" type="text" data-marks="1" data-answer="eat|eat his lunch" placeholder="…"/> and feel the benefits of being in nature.</div>
+            <div>
+              <div class="q-text" style="font-weight:900;color:var(--blue)">(1 mark)</div>
+            </div>
+          </div>
+        </div>
+        <!-- Q32 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">32</span> It is thought that <input class="answer-box inline-input" type="text" data-marks="1" data-answer="doctors" placeholder="…"/> should add forest bathing to their list of non-medical therapies.</div>
+            <div><div class="q-text" style="font-weight:900;color:var(--blue)">(1 mark)</div></div>
+          </div>
+        </div>
+        <!-- Q33 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">33</span> Trees and plants produce a <input class="answer-box inline-input" type="text" data-marks="1" data-answer="chemical" placeholder="…"/> that has a positive impact on people.</div>
+            <div><div class="q-text" style="font-weight:900;color:var(--blue)">(1 mark)</div></div>
+          </div>
+        </div>
+        <!-- Q34 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">34</span> People in America tend to have <input class="answer-box inline-input" type="text" data-marks="1" data-answer="indoor lives" placeholder="…"/> and they are losing their connection with nature.</div>
+            <div><div class="q-text" style="font-weight:900;color:var(--blue)">(1 mark)</div></div>
+          </div>
+        </div>
+        <!-- Q35 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">35</span> People think that taking a <input class="answer-box inline-input" type="text" data-marks="1" data-answer="walk" placeholder="…"/> in the woods is the same as forest bathing.</div>
+            <div><div class="q-text" style="font-weight:900;color:var(--blue)">(1 mark)</div></div>
+          </div>
+        </div>
+        <!-- Q36 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">36</span> At the Institute, people learn about the <input class="answer-box inline-input" type="text" data-marks="1" data-answer="history|science" placeholder="…"/> of the process before going out into the woods.</div>
+            <div><div class="q-text" style="font-weight:900;color:var(--blue)">(1 mark)</div></div>
+          </div>
+        </div>
+        <!-- Q37 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">37</span> At the end of their session, people focus on the <input class="answer-box inline-input" type="text" data-marks="1" data-answer="colours" placeholder="…"/> of their surroundings.</div>
+            <div><div class="q-text" style="font-weight:900;color:var(--blue)">(1 mark)</div></div>
+          </div>
+        </div>
+        <!-- Q38 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">38</span> By <input class="answer-box inline-input" type="text" data-marks="1" data-answer="training people" placeholder="…"/>, the Institute is working to increase the number of forest bathing guides.</div>
+            <div><div class="q-text" style="font-weight:900;color:var(--blue)">(1 mark)</div></div>
+          </div>
+        </div>
+        <!-- Q39 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">39</span> An alternative to forest bathing is to remove <input class="answer-box inline-input" type="text" data-marks="1" data-answer="shoes|your shoes" placeholder="…"/> when walking on grass.</div>
+            <div><div class="q-text" style="font-weight:900;color:var(--blue)">(1 mark)</div></div>
+          </div>
+        </div>
+        <!-- Q40 -->
+        <div class="q-block">
+          <div class="q-grid">
+            <div class="q-text"><span class="q-num">40</span> One study states that <input class="answer-box inline-input" type="text" data-marks="1" data-answer="planners|city planners" placeholder="…"/> should remember the value of green spaces when developing urban areas.</div>
+            <div><div class="q-text" style="font-weight:900;color:var(--blue)">(1 mark)</div></div>
+          </div>
+        </div>
+
+        <div class="section-title">Questions 41–45</div>
+        <div class="intro-note">Complete this summary of the text using words from the box below. Each word may be used once or not used at all.</div>
+
+        <div class="word-box-container">
+          <span class="word-chip" data-word="confirmed">confirmed</span>
+          <span class="word-chip" data-word="green">green</span>
+          <span class="word-chip" data-word="health">health</span>
+          <span class="word-chip" data-word="urban">urban</span>
+          <span class="word-chip" data-word="work">work</span>
+          <span class="word-chip" data-word="believes">believes</span>
+          <span class="word-chip" data-word="support">support</span>
+          <span class="word-chip" data-word="questioned">questioned</span>
+          <span class="word-chip" data-word="replace">replace</span>
+          <span class="word-chip" data-word="doubts">doubts</span>
+        </div>
+
+        <div class="fill-sentence">
+          People’s lifestyles do not provide them with enough opportunities to connect with nature. However, forest bathing has been recognised as a way of helping people with
+          <span class="fill-blank" id="b41" data-answer="health" onclick="selectBlank(this)"><span class="blank-text">&nbsp;</span><span class="blank-reveal">Correct: health</span></span>
+          issues.
+          According to Harriet Sherwood, the practice of forest bathing should be used to
+          <span class="fill-blank" id="b42" data-answer="support" onclick="selectBlank(this)"><span class="blank-text">&nbsp;</span><span class="blank-reveal">Correct: support</span></span>
+          other non-medical therapies used in Britain. Studies into forest bathing have
+          <span class="fill-blank" id="b43" data-answer="confirmed" onclick="selectBlank(this)"><span class="blank-text">&nbsp;</span><span class="blank-reveal">Correct: confirmed</span></span>
+          the benefits of this practice.
+          Even people living in
+          <span class="fill-blank" id="b44" data-answer="urban" onclick="selectBlank(this)"><span class="blank-text">&nbsp;</span><span class="blank-reveal">Correct: urban</span></span>
+          areas can find ways of connecting with nature.
+          Harriet now
+          <span class="fill-blank" id="b45" data-answer="believes" onclick="selectBlank(this)"><span class="blank-text">&nbsp;</span><span class="blank-reveal">Correct: believes</span></span>
+          that time spent in nature truly benefits people.
+        </div>
+        <div style="font-size:.82rem;color:rgba(0,0,0,.55);margin-top:.55rem;font-weight:800;">
+          ← Click a blank above, then click a word from the box
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" type="button" onclick="checkTab('p3','s3')">✓ Check Answers</button>
+          <button class="btn btn-secondary" type="button" onclick="toggleKey('k3')">Show / Hide Answer Key</button>
+          <button class="btn btn-ghost" type="button" onclick="resetTab('p3','s3','k3')">Reset</button>
+        </div>
+
+        <div class="score-banner" id="s3"></div>
+        <div class="ms-feedback" id="fb3"></div>
+
+        <div class="answer-key" id="k3">
+          <div class="section-title">Answer Key – Part 3</div>
+          <div class="key-grid">
+            <div class="key-item"><span class="key-letter">T</span><span>Q26 – True</span></div>
+            <div class="key-item"><span class="key-letter">F</span><span>Q27 – False</span></div>
+            <div class="key-item"><span class="key-letter">F</span><span>Q28 – False</span></div>
+            <div class="key-item"><span class="key-letter">NG</span><span>Q29 – Not Given</span></div>
+            <div class="key-item"><span class="key-letter">T</span><span>Q30 – True</span></div>
+            <div class="key-item"><span class="key-letter">–</span><span>Q31 – eat (his lunch)</span></div>
+            <div class="key-item"><span class="key-letter">–</span><span>Q32 – doctors</span></div>
+            <div class="key-item"><span class="key-letter">–</span><span>Q33 – chemical</span></div>
+            <div class="key-item"><span class="key-letter">–</span><span>Q34 – indoor lives</span></div>
+            <div class="key-item"><span class="key-letter">–</span><span>Q35 – walk</span></div>
+            <div class="key-item"><span class="key-letter">–</span><span>Q36 – history / science</span></div>
+            <div class="key-item"><span class="key-letter">–</span><span>Q37 – colours</span></div>
+            <div class="key-item"><span class="key-letter">–</span><span>Q38 – training people</span></div>
+            <div class="key-item"><span class="key-letter">–</span><span>Q39 – (your) shoes</span></div>
+            <div class="key-item"><span class="key-letter">–</span><span>Q40 – (city) planners</span></div>
+            <div class="key-item"><span class="key-letter">health</span><span>Q41 – health issues</span></div>
+            <div class="key-item"><span class="key-letter">support</span><span>Q42 – support</span></div>
+            <div class="key-item"><span class="key-letter">confirmed</span><span>Q43 – confirmed</span></div>
+            <div class="key-item"><span class="key-letter">urban</span><span>Q44 – urban</span></div>
+            <div class="key-item"><span class="key-letter">believes</span><span>Q45 – believes</span></div>
+          </div>
+        </div>
+
+        <div class="tab-nav-bottom">
+          <button class="btn btn-ghost" type="button" onclick="showTab('p2')">← Part 2</button>
+          <button class="btn btn-primary" type="button" onclick="showTab('p4')">Next: Part 4 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== PART 4 ===================== -->
+    <div id="p4" class="tab-panel" data-total-marks="10">
+      <div class="card">
+        <div class="part-header">
+          <span class="part-num">Part 4</span>
+          <div>
+            <h2>Email Writing</h2>
+            <p>You have joined a swimming club. Write an email to your friend to tell them about it. &nbsp;|&nbsp; 10 marks</p>
+          </div>
+        </div>
+
+        <div class="writing-task">
+          <h4>Task</h4>
+          <p style="font-size:.95rem;font-weight:850;margin-bottom:.55rem;">
+            You have joined a swimming club. Write an email to your friend to tell them about it.
+          </p>
+          <p style="font-size:.93rem;font-weight:900;margin-bottom:.3rem;">In your email you must:</p>
+          <ul>
+            <li>write about who you go swimming with</li>
+            <li>state where you go swimming</li>
+            <li>write why you think your friend should join the swimming club.</li>
+          </ul>
+          <div class="word-limit">You must write between 75 and 100 words only.</div>
+        </div>
+
+        <textarea class="writing-area" id="t4" placeholder="Write your email here…" data-min-words="75" data-max-words="100" data-marks="10" oninput="countWords(this,'wc4')"></textarea>
+        <div class="word-counter" id="wc4">Words: 0</div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" type="button" onclick="checkTab('p4','s4')">✓ Check Answers</button>
+          <button class="btn btn-secondary" type="button" onclick="toggleKey('k4')">Show / Hide Answer Key</button>
+          <button class="btn btn-ghost" type="button" onclick="resetTab('p4','s4','k4')">Reset</button>
+        </div>
+        <div class="score-banner" id="s4"></div>
+        <div class="ms-feedback" id="fb4"></div>
+
+        <div class="answer-key" id="k4">
+          <div class="section-title">Answer Key – Part 4</div>
+          <div class="teacher-note">
+            Writing tasks are teacher-marked. This interactive page can only auto-check the word count range.
+          </div>
+          <div class="key-grid">
+            <div class="key-item"><span class="key-letter">75–100</span><span>Word limit for Part 4</span></div>
+            <div class="key-item"><span class="key-letter">✓</span><span>Includes: who you swim with, where you swim, why to join</span></div>
+          </div>
+        </div>
+
+        <div class="tab-nav-bottom">
+          <button class="btn btn-ghost" type="button" onclick="showTab('p3')">← Part 3</button>
+          <button class="btn btn-primary" type="button" onclick="showTab('p5')">Next: Part 5 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== PART 5 ===================== -->
+    <div id="p5" class="tab-panel" data-total-marks="20">
+      <div class="card">
+        <div class="part-header">
+          <span class="part-num">Part 5</span>
+          <div>
+            <h2>Article Writing</h2>
+            <p>You have been asked to write an article for the school magazine about a person who is important to you. &nbsp;|&nbsp; 20 marks</p>
+          </div>
+        </div>
+
+        <div class="writing-task">
+          <h4>Task</h4>
+          <p style="font-size:.95rem;font-weight:850;margin-bottom:.55rem;">
+            You have been asked to write an article for the school magazine about a person who is important to you.
+          </p>
+          <p style="font-size:.93rem;font-weight:900;margin-bottom:.3rem;">In your article you must:</p>
+          <ul>
+            <li>state who this important person is</li>
+            <li>give two details that describe this person</li>
+            <li>give two reasons why this person is important to you.</li>
+          </ul>
+          <div class="word-limit">You must write between 100 and 150 words only.</div>
+        </div>
+
+        <textarea class="writing-area" id="t5" placeholder="Write your article here…" data-min-words="100" data-max-words="150" data-marks="20" oninput="countWords(this,'wc5')"></textarea>
+        <div class="word-counter" id="wc5">Words: 0</div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" type="button" onclick="checkTab('p5','s5')">✓ Check Answers</button>
+          <button class="btn btn-secondary" type="button" onclick="toggleKey('k5')">Show / Hide Answer Key</button>
+          <button class="btn btn-ghost" type="button" onclick="resetTab('p5','s5','k5')">Reset</button>
+        </div>
+        <div class="score-banner" id="s5"></div>
+        <div class="ms-feedback" id="fb5"></div>
+
+        <div class="answer-key" id="k5">
+          <div class="section-title">Answer Key – Part 5</div>
+          <div class="teacher-note">
+            Writing tasks are teacher-marked. This interactive page can only auto-check the word count range.
+          </div>
+          <div class="key-grid">
+            <div class="key-item"><span class="key-letter">100–150</span><span>Word limit for Part 5</span></div>
+            <div class="key-item"><span class="key-letter">✓</span><span>Includes: who, 2 details, 2 reasons</span></div>
+          </div>
+        </div>
+
+        <div class="tab-nav-bottom">
+          <button class="btn btn-ghost" type="button" onclick="showTab('p4')">← Part 4</button>
+          <button class="btn btn-primary" type="button" onclick="showTab('p6')">Next: Part 6 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== PART 6 ===================== -->
+    <div id="p6" class="tab-panel" data-total-marks="25">
+      <div class="card">
+        <div class="part-header">
+          <span class="part-num">Part 6</span>
+          <div>
+            <h2>Summary Writing</h2>
+            <p>You are doing a project for your teacher about different ways of working. Read the text in the Insert Booklet, Part 6, page 8 and write a summary for your teacher. &nbsp;|&nbsp; 25 marks</p>
+          </div>
+        </div>
+
+        <div class="reading-text">
+          <h3>Working for Yourself</h3>
+          <p class="para-body">Before deciding whether working for yourself suits your personality and lifestyle, there are several points to consider.</p>
+          <p class="para-body">The most significant advantage of working for yourself is that you become your own boss, having complete control of your workload. You don’t have to accept contracts that don’t interest you and you decide the direction of your business. In terms of a work schedule, you can fit your work more comfortably around your life commitments. You do not have to work the traditional 9 a.m. to 5 p.m. and you are free to attend appointments, such as the dentist, without getting permission. You will probably get more work done too, as working with others in an office environment can, for example, be a source of continuous interruptions.</p>
+          <p class="para-body">Those who are based in a company office may spend a considerable amount of time sitting in traffic on their way to work. If you work for yourself from home, you can spend this time more productively, and you are not forced to leave the house in bad weather. In addition, you won’t have the travel costs. It is not necessary for you to spend as much money on smart work clothes, as long as you have some formal pieces for any face-to-face or video meetings that you have to attend. Going out for unhealthy lunches with colleagues is no longer a necessity and can be replaced with homemade healthy options at a reduced cost.</p>
+          <p class="para-body">However, regardless of how focused you aim to be, working for yourself, especially from home, can lead you to be easily distracted. There is always the temptation to switch on the TV, or even do some household chores. You must be disciplined, set up a strict work schedule and follow it; this can be challenging at first. It’s much easier to separate work and home life when you are working for somebody else and you are not based at home. You will definitely find you end up working odd hours to accommodate the demands of your home and work life. Even though one of the advantages of working for yourself is having a more flexible schedule, when you change your plans at the last minute, you may have to work later or earlier than normal the next day to catch up. In addition, having days off is unlikely if you have busy work periods. You have to make the effort to take breaks and spend some time outdoors otherwise you will lose your free time.</p>
+          <p class="para-body">Until friends and family understand that you do have to spend time working, you will have to manage their expectations to enable you to stay productive without interruptions. Initially, they may think that it is acceptable to interrupt your day with other activities, or leave household chores for you to complete as you are at home. Traditional working patterns are changing and working for yourself is a more achievable option these days. Could you be your own boss?</p>
+        </div>
+
+        <div class="writing-task">
+          <h4>Task</h4>
+          <p style="font-size:.95rem;font-weight:850;margin-bottom:.55rem;">
+            You are doing a project for your teacher about different ways of working. Read the text in the Insert Booklet, Part 6, page 8 and write a summary for your teacher.
+          </p>
+          <p style="font-size:.93rem;font-weight:900;margin-bottom:.3rem;">In your summary you must:</p>
+          <ul>
+            <li>give three advantages of working for yourself</li>
+            <li>give two disadvantages of working for yourself</li>
+            <li>give your predictions on whether more people will work for themselves in the future.</li>
+          </ul>
+          <div class="word-limit">You must write between 100 and 150 words only. You must use your own words where possible.</div>
+        </div>
+
+        <textarea class="writing-area" id="t6" placeholder="Write your summary here…" data-min-words="100" data-max-words="150" data-marks="25" oninput="countWords(this,'wc6')"></textarea>
+        <div class="word-counter" id="wc6">Words: 0</div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" type="button" onclick="checkTab('p6','s6')">✓ Check Answers</button>
+          <button class="btn btn-secondary" type="button" onclick="toggleKey('k6')">Show / Hide Answer Key</button>
+          <button class="btn btn-ghost" type="button" onclick="resetTab('p6','s6','k6')">Reset</button>
+        </div>
+        <div class="score-banner" id="s6"></div>
+        <div class="ms-feedback" id="fb6"></div>
+
+        <div class="answer-key" id="k6">
+          <div class="section-title">Answer Key – Part 6</div>
+          <div class="teacher-note">
+            Writing tasks are teacher-marked. This interactive page can only auto-check the word count range.
+          </div>
+          <div class="key-grid">
+            <div class="key-item"><span class="key-letter">100–150</span><span>Word limit for Part 6</span></div>
+            <div class="key-item"><span class="key-letter">✓</span><span>Includes: 3 advantages, 2 disadvantages, predictions</span></div>
+          </div>
+        </div>
+
+        <div class="tab-nav-bottom">
+          <button class="btn btn-ghost" type="button" onclick="showTab('p5')">← Part 5</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showTab(id){
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      const panel = document.getElementById(id);
+      if(!panel) return;
+      panel.classList.add('active');
+      const tabs = ['p1','p2','p3','p4','p5','p6'];
+      const idx = tabs.indexOf(id);
+      const btn = document.querySelectorAll('.tab-btn')[idx];
+      if(btn) btn.classList.add('active');
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    // ── Selection handlers ──
+    document.querySelectorAll('.mc-options').forEach(group => {
+      group.querySelectorAll('.mc-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          group.querySelectorAll('.mc-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          group.dataset.selected = btn.dataset.val;
+        });
+      });
+    });
+
+    document.querySelectorAll('.abcd-options').forEach(group => {
+      group.querySelectorAll('.abcd-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          group.querySelectorAll('.abcd-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          group.dataset.selected = btn.dataset.val;
+        });
+      });
+    });
+
+    document.querySelectorAll('.tfng-options').forEach(group => {
+      group.querySelectorAll('.tfng-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          group.querySelectorAll('.tfng-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          group.dataset.selected = btn.dataset.val;
+        });
+      });
+    });
+
+    // ── Word box summary ──
+    let activeBlank = null;
+    function selectBlank(el){
+      document.querySelectorAll('.fill-blank').forEach(b => b.classList.remove('active-outline'));
+      activeBlank = el;
+      el.classList.add('active-outline');
+    }
+
+    document.querySelectorAll('.word-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        if(!activeBlank) return;
+        if(chip.classList.contains('used')) return;
+
+        const prev = activeBlank.dataset.current || '';
+        // If changing a filled blank, free the previously used chip word.
+        if(prev){
+          document.querySelectorAll('.word-chip').forEach(c => {
+            if(c.dataset.word === prev) c.classList.remove('used');
+          });
+        }
+
+        const word = chip.dataset.word;
+        activeBlank.dataset.current = word;
+        const blankText = activeBlank.querySelector('.blank-text');
+        if(blankText) blankText.textContent = word;
+        chip.classList.add('used');
+        activeBlank.classList.remove('reveal','correct','wrong');
+        const revealEl = activeBlank.querySelector('.blank-reveal');
+        if(revealEl) revealEl.style.display = 'none';
+
+        // Clear selection outline
+        activeBlank.classList.remove('active-outline');
+        activeBlank = null;
+      });
+    });
+
+    // ── Helpers ──
+    function normalizeAnswer(s){
+      return String(s || '')
+        .toLowerCase()
+        .trim()
+        .replace(/[’"]/g, "'")
+        .replace(/-/g, " ")
+        .replace(/\s+/g, " ");
+    }
+
+    function setRevealForInput(input, correctAnswer){
+      let reveal = input.parentElement ? input.parentElement.querySelector('.reveal-inline') : null;
+      // For inline sentence-completion inputs, a reveal element may not exist.
+      if(!reveal){
+        reveal = document.createElement('div');
+        reveal.className = 'reveal-inline';
+        reveal.style.display = 'none';
+        input.insertAdjacentElement('afterend', reveal);
+      }
+      reveal.textContent = 'Correct: ' + correctAnswer;
+      reveal.style.display = 'inline-block';
+    }
+    function hideRevealForInput(input){
+      const reveal = input.parentElement ? input.parentElement.querySelector('.reveal-inline') : null;
+      if(!reveal) return;
+      reveal.style.display = 'none';
+      reveal.textContent = '';
+    }
+
+    function autoScoreWriting(wc, minWords, maxWords, fullMarks){
+      if(!wc) return 0;
+      if(wc >= minWords && wc <= maxWords) return fullMarks;
+      if(wc < minWords) return Math.round(fullMarks * (wc / minWords));
+      return Math.round(fullMarks * (maxWords / wc));
+    }
+
+    // ── Check per tab ──
+    function checkTab(panelId, scoreId){
+      const panel = document.getElementById(panelId);
+      if(!panel) return;
+
+      const totalMarks = Number(panel.dataset.totalMarks || 0);
+      let correctMarks = 0;
+      let incorrect = [];
+      const feedbackBox = document.getElementById('fb' + panelId.slice(1));
+      if(feedbackBox){
+        feedbackBox.classList.remove('show');
+        feedbackBox.innerHTML = '';
+      }
+
+      const hints = {
+        p1: {
+          1: 'Food options are in paragraph E.',
+          2: 'Choosing your seats is in paragraph I.',
+          3: 'After work opening times are in paragraph A.',
+          4: 'Group lessons are in paragraph J.',
+          5: 'Parking information is in paragraph C.',
+          6: 'A quiet break is in paragraph H.',
+          7: 'Directions (postcode) are in paragraph B.',
+          8: 'Winning points/prizes are in paragraph G.',
+          9: 'Clothing stores are in paragraph D.',
+          10: 'Water activity is in paragraph F.'
+        },
+        p2: {
+          21: 'The scheme provides details of local businesses and accommodation providers.',
+          22: 'The city centre is pedestrian-friendly (encourages walking).',
+          23: 'Timetables match perfectly; fewer delays than in Britain.',
+          24: 'She enjoys wild swimming with a volunteer.',
+          25: 'Dyron stays open through every season (so it is busier in winter).'
+        },
+        p3: {
+          26: 'Woodland Trust suggested forest bathing to boost wellbeing.',
+          27: 'The text says the Japanese government is “to thank”.',
+          28: 'Forest bathing involves walking aimlessly and slowly (not a set distance).',
+          29: 'There is no information about the sessions being expensive.',
+          30: 'It says even 20 minutes can help (surprised me).',
+          41: 'Use “health” for issues.',
+          42: 'Use “support” for using it with other therapies.',
+          43: 'Use “confirmed” for studies.',
+          44: 'Use “urban” for city living.',
+          45: 'Use “believes” for Harriet’s view now.'
+        }
+      };
+
+      function getQNumFromBlock(block){
+        if(!block) return '';
+        const el = block.querySelector('.q-num');
+        return el ? el.textContent.trim() : '';
+      }
+
+      function getHintForWrong(qNum){
+        const partHints = hints[panelId] || {};
+        return partHints[qNum] || 'Use the exact information from the text (max THREE words for short answers).';
+      }
+
+      // Reset feedback styles (for this panel only)
+      panel.querySelectorAll('.mc-btn, .tfng-btn, .abcd-btn').forEach(btn => {
+        btn.classList.remove('correct','wrong','reveal');
+      });
+      panel.querySelectorAll('input.answer-box').forEach(input => {
+        input.classList.remove('correct','wrong');
+        hideRevealForInput(input);
+      });
+      panel.querySelectorAll('.fill-blank').forEach(blank => {
+        blank.classList.remove('correct','wrong','reveal');
+        const revealEl = blank.querySelector('.blank-reveal');
+        if(revealEl) revealEl.style.display = 'none';
+      });
+      panel.querySelectorAll('.word-chip').forEach(c => c.classList.remove('used'));
+      // Re-mark used chips based on blanks
+      panel.querySelectorAll('.fill-blank').forEach(blank => {
+        const word = blank.dataset.current;
+        if(word){
+          panel.querySelectorAll('.word-chip').forEach(c => {
+            if(c.dataset.word === word) c.classList.add('used');
+          });
+        }
+      });
+      panel.querySelectorAll('.writing-area').forEach(tx => {
+        tx.style.borderColor = 'rgba(0,0,0,.16)';
+      });
+
+      // MC / Paragraph matching
+      panel.querySelectorAll('.mc-options').forEach(group => {
+        const ans = group.dataset.answer || '';
+        const sel = group.dataset.selected || '';
+        const btns = group.querySelectorAll('.mc-btn');
+        btns.forEach(b => b.classList.remove('correct','wrong','reveal'));
+        if(sel && sel === ans){
+          correctMarks += 1;
+          const selBtn = group.querySelector('.mc-btn[data-val="' + ans + '"]');
+          if(selBtn) selBtn.classList.add('correct');
+        }else{
+          const selBtn = sel ? group.querySelector('.mc-btn[data-val="' + sel + '"]') : null;
+          if(selBtn) selBtn.classList.add('wrong');
+          const correctBtn = group.querySelector('.mc-btn[data-val="' + ans + '"]');
+          if(correctBtn) correctBtn.classList.add('reveal');
+          const qNum = getQNumFromBlock(group.closest('.q-block'));
+          if(qNum){
+            incorrect.push({ qNum, correct: ans, hint: getHintForWrong(qNum) });
+          }
+        }
+      });
+
+      // ABCD MC
+      panel.querySelectorAll('.abcd-options').forEach(group => {
+        const ans = group.dataset.answer || '';
+        const sel = group.dataset.selected || '';
+        group.querySelectorAll('.abcd-btn').forEach(b => b.classList.remove('correct','wrong','reveal','selected'));
+        // keep "selected" styling if they selected; re-add after class changes
+        group.querySelectorAll('.abcd-btn').forEach(b => {
+          if(b.dataset.val === sel) b.classList.add('selected');
+        });
+
+        if(sel && sel === ans){
+          correctMarks += 1;
+          const selBtn = group.querySelector('.abcd-btn[data-val="' + ans + '"]');
+          if(selBtn) selBtn.classList.add('correct');
+        }else{
+          const selBtn = sel ? group.querySelector('.abcd-btn[data-val="' + sel + '"]') : null;
+          if(selBtn) selBtn.classList.add('wrong');
+          const correctBtn = group.querySelector('.abcd-btn[data-val="' + ans + '"]');
+          if(correctBtn) correctBtn.classList.add('reveal');
+          const qNum = getQNumFromBlock(group.closest('.q-block'));
+          if(qNum){
+            incorrect.push({ qNum, correct: ans, hint: getHintForWrong(qNum) });
+          }
+        }
+      });
+
+      // TFNG
+      panel.querySelectorAll('.tfng-options').forEach(group => {
+        const ans = group.dataset.answer || '';
+        const sel = group.dataset.selected || '';
+        group.querySelectorAll('.tfng-btn').forEach(b => b.classList.remove('correct','wrong','reveal'));
+        if(sel && sel === ans){
+          correctMarks += 1;
+          const selBtn = group.querySelector('.tfng-btn[data-val="' + ans + '"]');
+          if(selBtn) selBtn.classList.add('correct');
+        }else{
+          const selBtn = sel ? group.querySelector('.tfng-btn[data-val="' + sel + '"]') : null;
+          if(selBtn) selBtn.classList.add('wrong');
+          const correctBtn = group.querySelector('.tfng-btn[data-val="' + ans + '"]');
+          if(correctBtn) correctBtn.classList.add('reveal');
+          const qNum = getQNumFromBlock(group.closest('.q-block'));
+          if(qNum){
+            incorrect.push({ qNum, correct: ans, hint: getHintForWrong(qNum) });
+          }
+        }
+      });
+
+      // Short answers + sentence completion inputs
+      panel.querySelectorAll('input.answer-box[data-answer]').forEach(input => {
+        const ansRaw = input.dataset.answer || '';
+        const marks = Number(input.dataset.marks || 1);
+        const userRaw = input.value || '';
+        const userTrim = String(userRaw).trim();
+        if(!userTrim) return;
+
+        const ansAlternatives = String(ansRaw).split('|').map(s => s.trim()).filter(Boolean);
+        const ansAlternativesNorm = ansAlternatives.map(a => normalizeAnswer(a));
+
+        const userNorm = normalizeAnswer(userTrim);
+        const userWordCount = userNorm.replace(/[^a-z0-9\s']/g, ' ').split(' ').filter(Boolean).length;
+
+        // Mark scheme rule: more than THREE words = no credit.
+        let ok = false;
+        const looksLikeMultiple = /[;,/]/.test(userTrim);
+        if(userWordCount <= 3){
+          // Heuristic: if someone writes multiple answers separated with punctuation, do not credit.
+          if(!looksLikeMultiple){
+            ok = ansAlternativesNorm.includes(userNorm);
+          }
+        }
+
+        if(ok){
+          correctMarks += marks;
+          input.classList.add('correct');
+        }else{
+          input.classList.add('wrong');
+          const correctDisplay = ansAlternatives.join(' / ');
+          setRevealForInput(input, correctDisplay);
+          const qNum = getQNumFromBlock(input.closest('.q-block'));
+          if(qNum){
+            const reason = userWordCount > 3 ? 'More than THREE words (no credit).' :
+              looksLikeMultiple ? 'Only one answer from the text (avoid extra options).' :
+              'Use the exact wording from the text (max THREE words).';
+            incorrect.push({ qNum, correct: correctDisplay, hint: reason });
+          }
+        }
+      });
+
+      // Word box blanks
+      panel.querySelectorAll('.fill-blank[data-answer]').forEach(blank => {
+        const ans = normalizeAnswer(blank.dataset.answer || '');
+        const user = normalizeAnswer(blank.dataset.current || '');
+        const revealEl = blank.querySelector('.blank-reveal');
+        const marks = 1;
+        const ok = user && user === ans;
+        if(ok){
+          correctMarks += marks;
+          blank.classList.add('correct');
+          if(revealEl) revealEl.style.display = 'none';
+        }else{
+          blank.classList.add('wrong','reveal');
+          if(revealEl) revealEl.style.display = 'inline-block';
+          const qNum = blank.id ? String(blank.id).replace('b','') : '';
+          if(qNum){
+            incorrect.push({ qNum, correct: blank.dataset.answer || '', hint: getHintForWrong(qNum) });
+          }
+        }
+      });
+
+      // Writing tasks (auto-score by word count only)
+      panel.querySelectorAll('textarea.writing-area[data-min-words]').forEach(tx => {
+        const minW = Number(tx.dataset.minWords || 0);
+        const maxW = Number(tx.dataset.maxWords || 0);
+        const marks = Number(tx.dataset.marks || 0);
+        const wc = (tx.value.trim().match(/\S+/g) || []).length;
+
+        const awarded = autoScoreWriting(wc, minW, maxW, marks);
+        correctMarks += awarded;
+
+        if(wc >= minW && wc <= maxW){
+          tx.style.borderColor = 'rgba(46,204,113,.9)';
+        }else if(wc === 0){
+          tx.style.borderColor = 'rgba(0,0,0,.16)';
+        }else{
+          tx.style.borderColor = 'rgba(231,76,60,.9)';
+          if(wc !== 0){
+            incorrect.push({
+              qNum: '',
+              correct: minW + '-' + maxW,
+              hint: 'Word count should be within the required range (' + minW + '-' + maxW + ' words).'
+            });
+          }
+        }
+      });
+
+      const banner = document.getElementById(scoreId);
+      const pct = totalMarks ? (correctMarks / totalMarks) : 0;
+      banner.classList.remove('show','pass','fail');
+      banner.classList.add('show');
+      if(pct >= 0.7){
+        banner.classList.add('pass');
+        banner.textContent = 'Score: ' + correctMarks + ' / ' + totalMarks + ' — Well done!';
+      }else{
+        banner.classList.add('fail');
+        banner.textContent = 'Score: ' + correctMarks + ' / ' + totalMarks + ' — Needs practice.';
+      }
+
+      // Render brief marking-scheme hints after check
+      if(feedbackBox){
+        const checklistReading =
+          'Reading checklist: For short-answer/sentence completion, write NO MORE than THREE words from one point in the text. For MC/paragraph matching/T-F-NG, choose ONE correct option.';
+        const checklistWriting =
+          'Writing checklist: Include all required bullet points, stay within the word limit, and use the right tone/format for the reader.';
+
+        const isWritingPart = (panelId === 'p4' || panelId === 'p5' || panelId === 'p6');
+        const checklistText = isWritingPart ? checklistWriting : checklistReading;
+
+        const itemsHtml = incorrect.length
+          ? '<div class="fb-items">' + incorrect.map(it => {
+              return '<div class="fb-item"><span>' + (it.qNum ? ('Q' + it.qNum + ' ') : '') + '</span>' +
+                '<span class="small">(Correct: ' + it.correct + ')</span>' +
+                '<div style="margin-top:.25rem;font-weight:850;color:rgba(0,0,0,.78)">' + it.hint + '</div></div>';
+            }).join('') + '</div>'
+          : '<div class="fb-items"><div class="fb-item">All your answers for this part match the marking scheme.</div></div>';
+
+        feedbackBox.innerHTML =
+          '<div class="fb-title">Hints (marking scheme)</div>' +
+          itemsHtml +
+          '<div class="fb-checklist"><div class="check-title">What to do next</div>' + checklistText + '</div>';
+
+        feedbackBox.classList.add('show');
+      }
+    }
+
+    function toggleKey(keyId){
+      const el = document.getElementById(keyId);
+      if(!el) return;
+      el.classList.toggle('visible');
+    }
+
+    function resetTab(panelId, scoreId, keyId){
+      const panel = document.getElementById(panelId);
+      if(!panel) return;
+
+      panel.querySelectorAll('.mc-options').forEach(g => {
+        g.dataset.selected = '';
+        g.querySelectorAll('.mc-btn').forEach(b => b.classList.remove('selected','correct','wrong','reveal'));
+      });
+      panel.querySelectorAll('.abcd-options').forEach(g => {
+        g.dataset.selected = '';
+        g.querySelectorAll('.abcd-btn').forEach(b => b.classList.remove('selected','correct','wrong','reveal'));
+      });
+      panel.querySelectorAll('.tfng-options').forEach(g => {
+        g.dataset.selected = '';
+        g.querySelectorAll('.tfng-btn').forEach(b => b.classList.remove('selected','correct','wrong','reveal'));
+      });
+
+      panel.querySelectorAll('input.answer-box').forEach(i => {
+        i.value = '';
+        i.classList.remove('correct','wrong');
+        hideRevealForInput(i);
+      });
+
+      panel.querySelectorAll('.fill-blank').forEach(b => {
+        const t = b.querySelector('.blank-text');
+        if(t) t.textContent = '\u00a0';
+        b.dataset.current = '';
+        b.classList.remove('correct','wrong','reveal','active-outline');
+        const r = b.querySelector('.blank-reveal');
+        if(r) r.style.display = 'none';
+      });
+
+      panel.querySelectorAll('.word-chip').forEach(c => c.classList.remove('used'));
+
+      panel.querySelectorAll('textarea.writing-area[data-min-words]').forEach(tx => {
+        tx.value = '';
+      });
+      const countIds = ['t4','t5','t6'];
+      countIds.forEach(tid => {
+        const tx = panel.querySelector('#' + tid);
+        if(tx){
+          const nextId = 'wc' + tid.slice(1);
+          const el = document.getElementById(nextId);
+          if(el) el.textContent = 'Words: 0';
+        }
+      });
+
+      const banner = document.getElementById(scoreId);
+      banner.className = 'score-banner';
+      banner.textContent = '';
+
+      const fb = document.getElementById('fb' + panelId.slice(1));
+      if(fb){
+        fb.classList.remove('show');
+        fb.innerHTML = '';
+      }
+
+      const key = document.getElementById(keyId);
+      if(key) key.classList.remove('visible');
+
+      activeBlank = null;
+    }
+
+    function countWords(el, cid){
+      const txt = el.value.trim();
+      const w = txt ? txt.split(/\s+/).filter(Boolean) : [];
+      const out = document.getElementById(cid);
+      if(out) out.textContent = 'Words: ' + w.length;
+    }
+  </script>
+</body>
+</html>
+

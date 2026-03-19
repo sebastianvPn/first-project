@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ESL Past Papers Menu</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root{
+      --blue:#2B5CEC;
+      --bg:#F9F9F9;
+      --black:#000000;
+      --yellow:#FFCC41;
+      --amber:#FEC502;
+    }
+    body{
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--black);
+      line-height: 1.6;
+      padding: 0 1rem 3rem;
+    }
+    .wrap{ max-width: 980px; margin: 0 auto; padding-top: 2.2rem; }
+    header{
+      background: var(--blue);
+      color: #fff;
+      padding: 1.6rem 1.7rem;
+      border-radius: 14px;
+      margin-bottom: 1.4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    header::after{
+      content:'';
+      position:absolute;
+      width:170px; height:170px;
+      background: var(--yellow);
+      opacity:.18;
+      border-radius: 50%;
+      right:-55px; bottom:-75px;
+    }
+    header h1{ font-size:1.35rem; font-weight:950; }
+    header p{ margin-top:.35rem; opacity:.9; font-size:.92rem; }
+
+    .year-block{
+      background:#fff;
+      border: 1.5px solid rgba(43,92,236,.16);
+      border-radius: 14px;
+      padding: 1.2rem 1.3rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 6px 22px rgba(43,92,236,.06);
+    }
+    .year-title{
+      display:flex;
+      gap:.6rem;
+      align-items:center;
+      margin-bottom:.6rem;
+    }
+    .year-badge{
+      background: var(--yellow);
+      color: var(--black);
+      font-weight: 950;
+      padding: .35rem .75rem;
+      border-radius: 999px;
+      border: 2px solid rgba(0,0,0,.08);
+    }
+    .session-grid{
+      display:flex;
+      flex-direction:column;
+      gap:.7rem;
+    }
+    .session-line{
+      display:flex;
+      gap:.75rem;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .session-badge{
+      background: rgba(43,92,236,.08);
+      color: var(--blue);
+      font-weight: 950;
+      padding: .25rem .55rem;
+      border-radius: 999px;
+      border: 1.5px solid rgba(43,92,236,.18);
+    }
+    a.paper-link{
+      display:inline-block;
+      text-decoration:none;
+      background: rgba(43,92,236,.06);
+      border: 2px solid rgba(43,92,236,.18);
+      color: var(--blue);
+      padding: .45rem .75rem;
+      border-radius: 12px;
+      font-weight: 900;
+      transition: transform .1s, opacity .15s;
+      margin-right:.5rem;
+      margin-top:.35rem;
+    }
+    a.paper-link:hover{ transform: translateY(-1px); opacity:.88; }
+
+    .hint{
+      margin-top: 1rem;
+      font-size:.9rem;
+      color: rgba(0,0,0,.7);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>English as a Second Language (4ES1/01) – Past Papers</h1>
+      <p>Pick a year, then click a session paper link to start.</p>
+    </header>
+
+    <div class="year-block">
+      <div class="year-title">
+        <span class="year-badge">2024</span>
+        <span style="font-weight:950;color:rgba(0,0,0,.65);">All available sessions</span>
+      </div>
+
+      <div class="session-grid">
+        <div class="session-line">
+          <span class="session-badge">May</span>
+          <a class="paper-link" href="papers/2024/2024-may-paper1.html">Paper 1</a>
+          <a class="paper-link" href="papers/2024/2024-june-paper1r.html">Paper 1R (Timezone R)</a>
+        </div>
+        <div class="session-line">
+          <span class="session-badge">Oct/Nov</span>
+          <a class="paper-link" href="papers/2024/2024-oct-paper1.html">Paper 1</a>
+        </div>
+      </div>
+      <div class="hint">More papers will appear here as you upload them (Paper PDF + Mark Scheme PDF).</div>
+    </div>
+
+    <div class="year-block">
+      <div class="year-title">
+        <span class="year-badge">2023</span>
+        <span style="font-weight:950;color:rgba(0,0,0,.65);">All available sessions</span>
+      </div>
+      <div class="session-grid">
+        <div class="session-line">
+          <span class="session-badge">Oct/Nov</span>
+          <a class="paper-link" href="papers/2023/2023-oct-paper1.html">Paper 1</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
